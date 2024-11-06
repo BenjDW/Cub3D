@@ -1,0 +1,14 @@
+feuille de route de cub3d :
+
+1.faire le parsing :
+
+-verifie les arguments
+pas plus d'un argument la map seulement
+-verifie la validité de la map .cub etc
+-gere le cas des espaces :
+il sont considere comme des 0 donc si sur les bord = invalide 
+mais a l'interieur ok , possiblement les change par des 0
+
+2.l'application so_long en soi
+-creation du ray casting
+-convertion en 3d
