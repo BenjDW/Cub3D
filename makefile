@@ -6,11 +6,13 @@
 #    By: bde-wits <bde-wits@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/05 07:10:51 by bde-wits          #+#    #+#              #
-#    Updated: 2024/11/05 07:23:55 by bde-wits         ###   ########.fr        #
+#    Updated: 2024/11/08 10:31:28 by bde-wits         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS = \
+SRCS = main.c\
+			ft_calloc.c\
+			ft_split.c\
 			
 OBJS = $(SRCS:.c=.o)
 

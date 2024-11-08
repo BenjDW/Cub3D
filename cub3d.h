@@ -6,7 +6,7 @@
 /*   By: bde-wits <bde-wits@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 08:02:59 by bde-wits          #+#    #+#             */
-/*   Updated: 2024/11/06 07:13:48 by bde-wits         ###   ########.fr       */
+/*   Updated: 2024/11/08 10:49:20 by bde-wits         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <stdlib.h>
 # include <stddef.h>
 # include <fcntl.h>
+# include <stdio.h>
 
 // dois contenir les données de la map
 typedef struct s_data
@@ -29,14 +30,26 @@ typedef struct s_data
 	// code RGB 123,123,123 pas plus, possible moins
 	char	*FLOOR;
 	char	*CEILING;//plafond
-	// 
+	//
+	char	**map;
 
-}				data;
+}				t_data;
 
 // dois contenir tout les donnée lie a la mlx img etc
 typedef struct s_xpm
 {
 
 }				t_xpm;
+
+
+int		ft_chrcub(char *str);
+void	freearg(char **tabarg);
+void	ft_bzero(void *s, size_t n);
+void	*ft_calloc(size_t nmemb, size_t size);
+char	*ft_strncpy(char *dest, char *src, int n);
+int		countword(char const *s, char c);
+char	**tabc(char **tab, const char *s, char c);
+char	**ft_split(char const *s, char c);
+int		recup_map(t_data *data, char *file);
 
 #endif
