@@ -6,13 +6,15 @@
 #    By: bde-wits <bde-wits@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/05 07:10:51 by bde-wits          #+#    #+#              #
-#    Updated: 2024/11/08 10:31:28 by bde-wits         ###   ########.fr        #
+#    Updated: 2024/11/14 10:33:17 by bde-wits         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 SRCS = main.c\
 			ft_calloc.c\
 			ft_split.c\
+			get_next_line_utils.c\
+			get_next_line.c\
 			
 OBJS = $(SRCS:.c=.o)
 

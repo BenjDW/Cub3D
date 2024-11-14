@@ -5,99 +5,24 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: bde-wits <bde-wits@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/05 07:12:05 by bde-wits          #+#    #+#             */
-/*   Updated: 2024/11/08 10:52:33 by bde-wits         ###   ########.fr       */
+/*   Created: 2024/11/14 05:18:11 by bde-wits          #+#    #+#             */
+/*   Updated: 2024/11/14 10:56:12 by bde-wits         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-// check si la map a exclusivement des contours en "1" texture mur
-int	check_wall(t_data *data)
-{
-	int	end;
-	int	j;
-	int	i;
-
-	end = 0;
-	j = -1;
-	while (data->map[end] != NULL)
-		end++;
-	end--;
-	while (data->map[0][++j] != '\0')
-	{
-		if (data->map[0][j] != '1')
-			return (1);
-	}
-	j = -1;
-	while (data->map[end][++j] != '\0')
-	{
-		if (data->map[end][j] != '1')
-			return (1);
-	}
-	j = -1;
-	while (++j <= end)
-	{
-		i = 0;
-		if (data->map[j][0] != '1')
-			return (1);
-		while (data->map[j][i] != '\0')
-			i++;
-		if (data->map[j][i] != '1')
-			return (1);
-	}
-	return (0);
-}
-
-// converti tout les espace en "1" mur
-void	convert_space(t_data *data)
+void	freearg(char **tabarg)
 {
 	int	i;
-	int	j;
 
-	i = -1;
-	printf("map convert\n");
-	while (data->map[++i] != NULL)
+	i = 0;
+	while (tabarg[i] != NULL)
 	{
-		j = -1;
-		while (data->map[i][++j] != '\0')
-		{
-			if (data->map[i][j] == ' ')
-				data->map[i][j] = '1';
-		}
-		printf("%s\n", data->map[i]);
+		free(tabarg[i]);
+		i++;
 	}
-}
-
-int	verifmap(t_data *data)
-{
-	convert_space(data);
-	if (check_wall(data) == 1)
-		return (printf("return 1 check wall\n"), 1);
-	return (0);
-}
-
-int	recup_map(t_data *data, char *file)
-{
-	int		fd;
-	char	*buffer;
-	int		bytesread;
-
-	buffer = (char *)malloc(sizeof(char) * (10000 + 1));
-	if (buffer == NULL)
-		return (1);
-	if (ft_chrcub(file) == 1)
-		return (write(1, "errorfilename\n", 13), 1);
-	fd = open(file, O_RDONLY, 0777);
-	if (fd < 0)
-		return (free(buffer), write(1, "fd introuvable", 14), 1);
-	bytesread = read(fd, buffer, 10000);
-	buffer[bytesread] = '\0';
-	data->map = ft_split(buffer, '\n');
-	free(buffer);
-	if (verifmap(data) == 1)
-		return (freearg(data->map), 1);
-	return (0);
+	free(tabarg);
 }
 
 int	ft_chrcub(char *str)
@@ -119,21 +44,53 @@ int	ft_chrcub(char *str)
 		if (str[i] == '.')
 			return (0);
 	}
+	printf("error not a .cub file\n");
 	return (1);
+}
+
+int	openfd(int *fd, char *file)
+{
+	(*fd) = open(file, O_RDONLY, 0777);
+	if ((*fd) < 0)
+		return (1);
+	return (0);
+}
+
+// search for directional path and floor , ceilling rgb code 
+int	chr_dir(char *line, int i)
+{
+	while (line[i] != '\0')
+	{
+		// search for dir and maybe apply or get_dir will handle it
+	}
+	return (1);
+}
+
+// get dir path for xpm directional
+int get_path_dir(t_data *data, char *file, int fd, char *line)
+{
+	if (openfd(&fd, file) == 1)
+		return (printf("error open file\n"), 1);
+	// if (get_dir() == )
+	while (1)
+	{
+		line = get_next_line(fd);
+		if (line == NULL)
+			break ;
+		if (chr_dir(line, -1) == 0) // direction found in line
+			get_dir(); // save in the right thing
+		// free(line);
+	}
+	verif_dir(); // verif all dir is not empty and maybe test in , if path is functunial
+	return(close(fd), 0);
 }
 
 int	verif_arg(t_data *data, char *file)
 {
-	// int	fd;
-
-	// if (ft_chrcub(argv[1]) == 1)
-		// return (printf("need file in .cub\n"), 1);
-	// fd = open(argv, O_WRONLY, 777);
-	// if (fd = -1)
-		// return (printf("file not fund\n"), 1);
-	if (recup_map(data, file) == 1)
+	//verif format	verif data xpm
+	if (ft_chrcub(file) == 1 || get_path_dir(data, file, 0, NULL) == 1)
 		return (1);
-	return (0);
+
 }
 
 int	parsing(int argc, char **argv, t_data *data)
@@ -143,21 +100,9 @@ int	parsing(int argc, char **argv, t_data *data)
 	return (0);
 }
 
-void	freearg(char **tabarg)
-{
-	int	i;
-
-	i = 0;
-	while (tabarg[i] != NULL)
-	{
-		free(tabarg[i]);
-		i++;
-	}
-	free(tabarg);
-}
-
 void	init_data(t_data *data)
 {
+	data->tempdir = NULL;
 	data->NORTH = NULL;
 	data->SOUTH = NULL;
 	data->EAST = NULL;
@@ -176,7 +121,7 @@ int	main(int argc, char **argv)
 	printf("start main\n");
 	init_data(&data);
 	if (parsing(argc, argv, &data) == 1)
-		return (1);
+		return (1); //free parsing;
 	printf("finish\n");
 	return (0);
 }

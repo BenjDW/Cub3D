@@ -6,12 +6,15 @@
 /*   By: bde-wits <bde-wits@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 08:02:59 by bde-wits          #+#    #+#             */
-/*   Updated: 2024/11/08 10:49:20 by bde-wits         ###   ########.fr       */
+/*   Updated: 2024/11/14 10:50:08 by bde-wits         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CUB3D_H
 # define CUB3D_H
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 1000
+# endif
 # include "./minilibx-linux/mlx.h"
 # include <unistd.h>
 # include <stdlib.h>
@@ -23,6 +26,7 @@
 typedef struct s_data
 {
 	// chemin des image texture direction
+	char	*tempdir;
 	char	*NORTH;
 	char	*SOUTH;
 	char	*EAST;
@@ -31,6 +35,7 @@ typedef struct s_data
 	char	*FLOOR;
 	char	*CEILING;//plafond
 	//
+	char	**file;
 	char	**map;
 
 }				t_data;
