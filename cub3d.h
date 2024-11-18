@@ -6,7 +6,7 @@
 /*   By: bde-wits <bde-wits@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 08:02:59 by bde-wits          #+#    #+#             */
-/*   Updated: 2024/11/14 10:50:08 by bde-wits         ###   ########.fr       */
+/*   Updated: 2024/11/18 10:30:28 by bde-wits         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,15 +46,32 @@ typedef struct s_xpm
 
 }				t_xpm;
 
-
+// parsing function
 int		ft_chrcub(char *str);
-void	freearg(char **tabarg);
-void	ft_bzero(void *s, size_t n);
-void	*ft_calloc(size_t nmemb, size_t size);
-char	*ft_strncpy(char *dest, char *src, int n);
-int		countword(char const *s, char c);
-char	**tabc(char **tab, const char *s, char c);
-char	**ft_split(char const *s, char c);
 int		recup_map(t_data *data, char *file);
+int		verif_dir(t_data *data);
+
+// split function annexe
+char	**ft_split(char const *s, char c);
+int		countword(char const *s, char c);
+void	ft_bzero(void *s, size_t n);
+char	**tabc(char **tab, const char *s, char c);
+char	*ft_strncpy(char *dest, char *src, int n);
+void	*ft_calloc(size_t nmemb, size_t size);
+void	freearg(char **tabarg);
+
+// get_next_line function
+char	*get_next_line(int fd);
+char	*readfile(int fd);
+char	*ft_verif(char *s, int i, int j, int fin);
+int		ft_verifn(char *src);
+char	*ft_dupafter(char *src);
+char	*ft_dup(char *src, int fin);
+int		ftr_strlen(char *s);
+char	*f_strjoin(char *s1, char *s2);
+char	*ft_join(char *stock, char *buffer);
+
+char	*ft_strdup(char *s);
+int		ft_strlen(char	*c);
 
 #endif

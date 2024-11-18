@@ -6,7 +6,7 @@
 /*   By: bde-wits <bde-wits@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 05:18:11 by bde-wits          #+#    #+#             */
-/*   Updated: 2024/11/14 10:56:12 by bde-wits         ###   ########.fr       */
+/*   Updated: 2024/11/18 10:38:57 by bde-wits         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,31 +57,98 @@ int	openfd(int *fd, char *file)
 }
 
 // search for directional path and floor , ceilling rgb code 
-int	chr_dir(char *line, int i)
+int	chr_dir(char *line, int i, int *code)
 {
-	while (line[i] != '\0')
+	// skip space and tab before word
+	while (line[++i] != '\0')
 	{
+		if (line[i] == 'N' && line[i + 1] == 'O') //NORTH
+			(*code) = 1;
+		if (line[i] == 'S' && line[i + 1] == 'O') //SOUTH
+			(*code) = 2;
+		if (line[i] == 'W' && line[i + 1] == 'E') //WEST
+			(*code) = 3;
+		if (line[i] == 'E' && line[i + 1] == 'A') //EAST
+			(*code) = 4;
+		if (line[i] == 'F' && line[i] != '\0') //FLOOR
+			(*code) = 5;
+		if (line[i] == 'C' && line[i] != '\0') //CEILLING
+			(*code) = 6;
+		if (code != 0)
+			return (printf("code status %d\n", (*code)), 0);
 		// search for dir and maybe apply or get_dir will handle it
 	}
 	return (1);
 }
 
+void	skip_to_path(char *line, int *i)
+{
+	while (line[*i] == ' ' || line[*i] == '\t')
+		(*i)++;
+	if (line[*i] != '\0' && line[*i] != '\n')
+	{
+		while (line[*i] != ' ' && line[*i] != '\t' && line[*i] != '\0')
+			(*i)++;
+		(*i)++;
+	}
+	printf ("resultat skip i = %d\n", (*i));
+}
+
+void	get_dir(t_data *data, char *line, int i, int code)
+{
+	printf("start get_dir\n");
+	skip_to_path(line, &i);
+	if (code == 1)
+		data->NORTH = ft_strdup(line + i);
+	else if (code == 2)
+		data->SOUTH = ft_strdup(line + i);
+	else if (code == 3)
+		data->WEST = ft_strdup(line + i);
+	else if (code == 4)
+		data->EAST = ft_strdup(line + i);
+	else if (code == 5)
+		data->FLOOR = ft_strdup(line + i);
+	else if (code == 6)
+		data->CEILING = ft_strdup(line + i);
+	printf("print strdup \"%s\"\n", line);
+}
+
+int	verif_dir(t_data *data)
+{
+	printf("start of verif dir\n");
+	if (data->NORTH == NULL || data->SOUTH == NULL || data->WEST == NULL
+		|| data->EAST == NULL || data->FLOOR == NULL 
+		|| data->CEILING == NULL)
+		return (printf("error direction path not found\n"), 1);
+	return (0);
+}
+
 // get dir path for xpm directional
 int get_path_dir(t_data *data, char *file, int fd, char *line)
 {
+	int	code;
+
 	if (openfd(&fd, file) == 1)
 		return (printf("error open file\n"), 1);
-	// if (get_dir() == )
 	while (1)
 	{
+		code = 0;
 		line = get_next_line(fd);
 		if (line == NULL)
 			break ;
-		if (chr_dir(line, -1) == 0) // direction found in line
-			get_dir(); // save in the right thing
-		// free(line);
+		if (chr_dir(line, -1, &code) == 0) // direction found in line
+			get_dir(data, line, 0, code); // save in the right thing
+		// printf("OK line found\n");
+		free(line);
 	}
-	verif_dir(); // verif all dir is not empty and maybe test in , if path is functunial
+	// printf("%s\n", data->SOUTH);
+	// printf("%s\n", data->NORTH);
+	// printf("%s\n", data->WEST);
+	// printf("%s\n", data->EAST);
+	// printf("%s\n", data->FLOOR);
+	// printf("%s\n", data->CEILING);
+	if (verif_dir(data) == 1) // verif all dir is not empty and maybe test in , if path is functunial
+		return (close(fd), 1);
 	return(close(fd), 0);
 }
 
@@ -90,7 +157,7 @@ int	verif_arg(t_data *data, char *file)
 	//verif format	verif data xpm
 	if (ft_chrcub(file) == 1 || get_path_dir(data, file, 0, NULL) == 1)
 		return (1);
-
+	return (0);
 }
 
 int	parsing(int argc, char **argv, t_data *data)
@@ -112,6 +179,36 @@ void	init_data(t_data *data)
 	data->map = NULL;
 	printf("finish init\n");
 	// data->
+}
+
+char	*ft_strdup(char *s)
+{
+	char	*dup;
+	int		i;
+	int		ls;
+
+	i = 0;
+	ls = ft_strlen(s);
+	dup = (char *)malloc((sizeof(char)) * (ls + 1));
+	if (dup == NULL)
+		return (NULL);
+	while (s[i] != '\0')
+	{
+		dup[i] = s[i];
+		i++;
+	}
+	dup[i] = '\0';
+	return (dup);
+}
+
+int	ft_strlen(char	*c)
+{
+	int	i;
+
+	i = 0;
+	while (c[i] != '\0')
+		i++;
+	return (i);
 }
 
 int	main(int argc, char **argv)
