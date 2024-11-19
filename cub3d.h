@@ -6,7 +6,7 @@
 /*   By: bde-wits <bde-wits@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 08:02:59 by bde-wits          #+#    #+#             */
-/*   Updated: 2024/11/18 10:30:28 by bde-wits         ###   ########.fr       */
+/*   Updated: 2024/11/19 08:44:46 by bde-wits         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 typedef struct s_data
 {
 	// chemin des image texture direction
-	char	*tempdir;
+	char	*temp;
 	char	*NORTH;
 	char	*SOUTH;
 	char	*EAST;
@@ -50,6 +50,7 @@ typedef struct s_xpm
 int		ft_chrcub(char *str);
 int		recup_map(t_data *data, char *file);
 int		verif_dir(t_data *data);
+int		found_map(char *line);
 
 // split function annexe
 char	**ft_split(char const *s, char c);

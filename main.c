@@ -6,7 +6,7 @@
 /*   By: bde-wits <bde-wits@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 05:18:11 by bde-wits          #+#    #+#             */
-/*   Updated: 2024/11/18 10:38:57 by bde-wits         ###   ########.fr       */
+/*   Updated: 2024/11/19 10:22:17 by bde-wits         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,22 @@ int	verif_dir(t_data *data)
 	return (0);
 }
 
+// fonction qui trouve le debut de la map
+int	found_map(char *line)
+{
+	int i;
+
+	i = -1;
+	if (line == NULL)
+		return (2); // skip is a the start of the file
+	while (line[++i] != '\0')
+	{
+		if (line[i] == '1' || line[i] == '0')
+			return (1);
+	}
+	return (0);
+}
+
 // get dir path for xpm directional
 int get_path_dir(t_data *data, char *file, int fd, char *line)
 {
@@ -134,11 +150,10 @@ int get_path_dir(t_data *data, char *file, int fd, char *line)
 	{
 		code = 0;
 		line = get_next_line(fd);
-		if (line == NULL)
+		if (line == NULL || found_map(line) == 1)
 			break ;
 		if (chr_dir(line, -1, &code) == 0) // direction found in line
 			get_dir(data, line, 0, code); // save in the right thing
-		// printf("OK line found\n");
 		free(line);
 	}
 	// printf("%s\n", data->SOUTH);
@@ -152,10 +167,85 @@ int get_path_dir(t_data *data, char *file, int fd, char *line)
 	return(close(fd), 0);
 }
 
+// solution 1 : close et reopen pour recupere le nombre de line neccessaire pour la map
+// solution 2 : trouve le depart de la map et utilise un read pour lire le reste et split \n
+void	get_map()
+{
+	
+}
+
+int	chr_map(char *line, int i)
+{
+	while (line[++i] != '\0')
+	{
+		if (line[i] == '0' || line[i] == '1')
+			return (0);
+	}
+	return (1);
+}
+
+// search the nbr of line in the map and if the map have error at end of it
+int	len_map(char *line, int *len, int i, int fd)
+{
+	(*len) = 0;
+	while (found_map(line) != 1)
+	{
+		line = get_next_line(fd);
+		if (line == NULL)
+			return (close(fd), 1);
+	}
+	while (1)
+	{
+		i = -1;
+		line = get_next_line(fd);
+		if (line == NULL)
+			break ;
+		while (line[++i] == '\0')
+		{
+			if (line[i] != '0' || line[i] != '1' || line[i] != 'N' 
+				|| line[i] != 'W' || line[i] != 'E' || line[i] != 'S' 
+				|| line[i] != '2' || line[i] != '3')
+				return (close(fd), 1);
+		}
+		(*len)++;
+	}
+	return (close(fd), 0);
+}
+
+
+int	verif_map(t_data *data, char *file, int fd, char *line)
+{
+	int	len;
+
+	if (openfd(&fd, file) == 1)
+	return (printf("error open file\n"), 1);
+	if (len_map(line, &len, -1, fd) == 1)
+		return (printf("error in map\n") ,1);
+	printf("result of len in file %d\n", len);
+	openfd(&fd, file);
+	while (1)
+	{
+		line = get_next_line(fd);
+		if (line == NULL)
+			break ;
+		if (found_map(line) == 1) // map found in line
+		{
+			get_map(); // save map in data->map
+			//return (close(fd), 0);
+		}
+		free(line);
+	}
+	if (check_map(data) == 1) // verif all dir is not empty and maybe test in , if path is functunial
+		return (close(fd), 1);
+	return(close(fd), 0);
+}
+
 int	verif_arg(t_data *data, char *file)
 {
 	//verif format	verif data xpm
 	if (ft_chrcub(file) == 1 || get_path_dir(data, file, 0, NULL) == 1)
+		return (1);
+	if (verif_map(data, file, 0, NULL) == 1)
 		return (1);
 	return (0);
 }
@@ -169,13 +259,13 @@ int	parsing(int argc, char **argv, t_data *data)
 
 void	init_data(t_data *data)
 {
-	data->tempdir = NULL;
 	data->NORTH = NULL;
 	data->SOUTH = NULL;
 	data->EAST = NULL;
 	data->WEST = NULL;
 	data->FLOOR = NULL;
 	data->CEILING = NULL;
+	data->temp = NULL;
 	data->map = NULL;
 	printf("finish init\n");
 	// data->
@@ -219,6 +309,6 @@ int	main(int argc, char **argv)
 	init_data(&data);
 	if (parsing(argc, argv, &data) == 1)
 		return (1); //free parsing;
-	printf("finish\n");
+	printf("finish in OK CASE\n");
 	return (0);
 }
