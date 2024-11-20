@@ -6,7 +6,7 @@
 #    By: bde-wits <bde-wits@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/05 07:10:51 by bde-wits          #+#    #+#              #
-#    Updated: 2024/11/14 10:33:17 by bde-wits         ###   ########.fr        #
+#    Updated: 2024/11/20 10:42:11 by bde-wits         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ SRCS = main.c\
 OBJS = $(SRCS:.c=.o)
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g
 LFLAGS = -lmlx -lXext -lX11 -L minilibx-linux
 NAME = Cub3D
 
