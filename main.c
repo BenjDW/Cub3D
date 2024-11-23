@@ -6,7 +6,7 @@
 /*   By: bde-wits <bde-wits@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 05:18:11 by bde-wits          #+#    #+#             */
-/*   Updated: 2024/11/20 11:33:07 by bde-wits         ###   ########.fr       */
+/*   Updated: 2024/11/23 12:17:50 by bde-wits         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ int	chr_dir(char *line, int i, int *code)
 		else if (line[i] == 'C' && line[i] != '\0') //CEILLING
 			(*code) = 6;
 		else if (code != 0)
-			return (printf("code status %d\n", (*code)), 0);
+			return (/*printf("code status %d\n", (*code)), */0);
 		i++;
 		// search for dir and maybe apply or get_dir will handle it
 	}
@@ -94,12 +94,12 @@ void	skip_to_path(char *line, int *i)
 			(*i)++;
 		(*i)++;
 	}
-	printf ("resultat skip i = %d\n", (*i));
+	// printf ("resultat skip i = %d\n", (*i));
 }
 
 void	get_dir(t_data *data, char *line, int i, int code)
 {
-	printf("start get_dir\n");
+	// printf("start get_dir\n");
 	skip_to_path(line, &i);
 	if (code == 1)
 		data->NORTH = ft_strdup(line + i);
@@ -113,7 +113,7 @@ void	get_dir(t_data *data, char *line, int i, int code)
 		data->FLOOR = ft_strdup(line + i);
 	else if (code == 6)
 		data->CEILING = ft_strdup(line + i);
-	printf("print strdup \"%s\"\n", line);
+	// printf("print strdup \"%s\"\n", line);
 }
 
 int	verif_dir(t_data *data)
@@ -134,6 +134,8 @@ int	found_map(char *line)
 	i = -1;
 	if (line == NULL)
 		return (2); // skip is a the start of the file
+	if (is_instr(line, 'F', -1) == 0 || is_instr(line, 'C', -1) == 0)
+		return (0);
 	while (line[++i] != '\0')
 	{
 		if (line[i] == '1' || line[i] == '0')
@@ -174,6 +176,8 @@ int get_path_dir(t_data *data, char *file, int fd, char *line)
 
 int	chr_map(char *line, int i)
 {
+	// if (is_instr(line, 'F', -1) == 1 || is_instr(line, 'C', -1) == 1)
+	// 	return (1);
 	while (line[++i] != '\0')
 	{
 		if (line[i] == '0' || line[i] == '1')
@@ -190,8 +194,9 @@ int	len_map(char *line, int *len, int i, int fd)
 	{
 		line = get_next_line(fd);
 		if (line == NULL)
-			return (close(fd), 1);
+			return (close(fd), printf("line = NULL\n"), 1);
 	}
+	// printf("len_map map found\n%s", line);
 	while (1)
 	{
 		i = -1;
@@ -214,6 +219,7 @@ int	len_map(char *line, int *len, int i, int fd)
 
 void	init_map(t_data *data, int len)
 {
+	// printf("LEN %d\n", len);
 	data->map = malloc(sizeof(char *) * (len + 1));
 	data->map[len] = NULL;
 }
@@ -228,16 +234,21 @@ void	get_map(t_data *data, int fd, char *line, int len)
 	init_map(data, len); // init the map to right length
 	while (1)
 	{
-		line = get_next_line(fd);
 		if (line == NULL)
 			break ;
-		data->map[i] = line;
+		// printf("line = %s\n", line);
+		data->map[i] = ft_strdup(line);
 		free(line);
+		// printf("data %d = %s\n", i, data->map[i]);
 		i++;
+		line = get_next_line(fd);
 	}
+	// printf("\n\nlen 13 = %s\n", data->map[len]);
+	// printf("len 14 = %s\n\n", data->map[len + 1]);
 	close(fd);
 }
 
+// possible de recupere la position de depart aussi
 int	check_start(t_data *data, int i, int j)
 {
 	int	start;
@@ -267,14 +278,27 @@ int	check_map(t_data *data, int i)
 		return (printf("error too small map\n"), 1);
 	if (check_start(data, -1, -1) == 1)
 		return (1);
+	if (test_map(data, 0, 0) == 1)
+		return (printf("TEST NOT ok\n"), 1);
 	return (printf("finish check_map\n"), 0);
+}
+
+int check_around(t_data *data, int x, int y)
+{
+    if (x <= 0 || y <= 0 || data->map[x + 1] == NULL || data->map[x][y + 1] == '\0')
+        return (1);
+    // Vérifie les cases adjacentes pour voir si elles sont valides
+    if (data->map[x - 1][y] == ' ' || data->map[x + 1][y] == ' ' ||
+        data->map[x][y - 1] == ' ' || data->map[x][y + 1] == ' ')
+        return (1); // '0' adjacent à un espace ou un vide
+    return (0);
 }
 
 int is_instr(char *str, char c, int i)
 {
 	while(str[++i] != '\0')
 	{
-		if (str[i] == 'c')
+		if (str[i] == c)
 			return (0);
 	}
 	return (1);
@@ -284,6 +308,7 @@ int	test_map(t_data *data, int x, int y)
 {
 	if (is_instr(data->map[0], '0', -1) == 0)
 		return (1);
+	printf("test map apres premier ligne\n");
 	while (data->map[++x] != NULL && data->map[x + 1] != NULL)
 	{
 		y = -1;
@@ -291,12 +316,18 @@ int	test_map(t_data *data, int x, int y)
 		{
 			if (data->map[x][y] == '0')
 			{
-				if (y == '0' || data->map[x][y + 1] == '\0')
+				if (check_around(data, x, y) == 1)
+					return (printf("map invalid check_around\n"), 1);
 			}
 		}
 	}
-	if (is_instr(data->map[--x], '0', -1) == 0)
+	int	i = -1;
+	while (data->map[++i] != NULL)
+		printf("%s\n", data->map[i]);
+	printf("test map derniere ligne %d\n%s\n", x, data->map[x]);
+	if (is_instr(data->map[x], '0', -1) == 0)
 		return (1);
+	return (0);
 }
 
 int	verif_map(t_data *data, char *file, int fd, char *line)
@@ -304,9 +335,9 @@ int	verif_map(t_data *data, char *file, int fd, char *line)
 	int	len;
 
 	if (openfd(&fd, file) == 1)
-	return (printf("error open file\n"), 1);
+		return (printf("error open file\n"), 1);
 	if (len_map(line, &len, -1, fd) == 1)
-		return (printf("error in map\n") ,1);
+		return (printf("error in LEN_map\n") ,1);
 	printf("result of len in file %d\n", len);
 	openfd(&fd, file);
 	while (1)
@@ -317,13 +348,17 @@ int	verif_map(t_data *data, char *file, int fd, char *line)
 		if (found_map(line) == 1) // map found in line
 		{
 			printf("ok verifmap foundmap = 1\n");
-			get_map(data, fd, NULL, len); // save map in data->map
+			get_map(data, fd, line, len);
 			//return (/*close(fd), */0);
 		}
-		free(line);
+		// free(line);
 	}
-	// if (check_map(data, 0) == 1) // test the map if is a correct form
-	// 	return (/*close(fd), */1);
+	printf("\n\napres boucle = %s\n\n", data->map[13]);
+	len = -1;
+	// while (data->map[++len] != NULL)
+		// printf("map L%d = %s\n", len, data->map[len]);
+	if (check_map(data, 0) == 1) // test the map if is a correct form
+		return (/*close(fd), */1);
 	return(/*close(fd), */0);
 }
 

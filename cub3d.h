@@ -6,7 +6,7 @@
 /*   By: bde-wits <bde-wits@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 08:02:59 by bde-wits          #+#    #+#             */
-/*   Updated: 2024/11/20 10:46:35 by bde-wits         ###   ########.fr       */
+/*   Updated: 2024/11/23 10:36:33 by bde-wits         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,10 @@ int		recup_map(t_data *data, char *file);
 int		verif_dir(t_data *data);
 int		found_map(char *line);
 void	skip_to_path(char *line, int *i);
+int		test_map(t_data *data, int x, int y);
+
+// Utils
+int		is_instr(char *str, char c, int i);
 
 // split function annexe
 char	**ft_split(char const *s, char c);
