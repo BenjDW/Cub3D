@@ -6,7 +6,7 @@
 /*   By: bde-wits <bde-wits@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 05:18:11 by bde-wits          #+#    #+#             */
-/*   Updated: 2024/11/23 12:17:50 by bde-wits         ###   ########.fr       */
+/*   Updated: 2024/11/24 10:04:09 by bde-wits         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,7 +189,7 @@ int	chr_map(char *line, int i)
 // search the nbr of line in the map and if the map have error at end of it
 int	len_map(char *line, int *len, int i, int fd)
 {
-	(*len) = 0;
+	(*len) = 1;
 	while (found_map(line) != 1)
 	{
 		line = get_next_line(fd);
@@ -220,7 +220,7 @@ int	len_map(char *line, int *len, int i, int fd)
 void	init_map(t_data *data, int len)
 {
 	// printf("LEN %d\n", len);
-	data->map = malloc(sizeof(char *) * (len + 1));
+	data->map = (char **)malloc(sizeof(char *) * (len + 1));
 	data->map[len] = NULL;
 }
 
@@ -243,8 +243,8 @@ void	get_map(t_data *data, int fd, char *line, int len)
 		i++;
 		line = get_next_line(fd);
 	}
-	// printf("\n\nlen 13 = %s\n", data->map[len]);
-	// printf("len 14 = %s\n\n", data->map[len + 1]);
+	// printf("\n\nlen %d = %s\n", len, data->map[len]);
+	// printf("len %d = %s\n\n", (len + 1), data->map[len + 1]);
 	close(fd);
 }
 
@@ -330,6 +330,49 @@ int	test_map(t_data *data, int x, int y)
 	return (0);
 }
 
+int	len_max(char **map)
+{
+	int	i;
+	int	temp;
+
+	i = -1;
+	temp = 0;
+	while(map[++i] != NULL)
+	{
+		if (ft_strlen(map[i]) > temp)
+			temp = ft_strlen(map[i]);
+	}
+	// printf("\nlen_max %d\n", temp);
+	return (temp);
+}
+
+void resize_map(t_data *data, int i, int l, int max)
+{
+    int len;
+
+    while (data->map[++i] != NULL)
+    {
+        len = ft_strlen(data->map[i]);
+        l = -1;
+        char *temp = (char *)malloc(sizeof(char) * (max + 1));
+        if (!temp)
+            return;
+        while (++l < len)
+        {
+            if (data->map[i][l] == '\n')
+                temp[l] = ' ';
+            else
+                temp[l] = data->map[i][l];
+        }
+        while (l < max)
+            temp[l++] = ' ';
+        
+        temp[l] = '\0';
+        free(data->map[i]);
+        data->map[i] = temp;
+    }
+}
+
 int	verif_map(t_data *data, char *file, int fd, char *line)
 {
 	int	len;
@@ -338,7 +381,7 @@ int	verif_map(t_data *data, char *file, int fd, char *line)
 		return (printf("error open file\n"), 1);
 	if (len_map(line, &len, -1, fd) == 1)
 		return (printf("error in LEN_map\n") ,1);
-	printf("result of len in file %d\n", len);
+	// printf("result of len in file %d\n", len);
 	openfd(&fd, file);
 	while (1)
 	{
@@ -353,10 +396,8 @@ int	verif_map(t_data *data, char *file, int fd, char *line)
 		}
 		// free(line);
 	}
-	printf("\n\napres boucle = %s\n\n", data->map[13]);
 	len = -1;
-	// while (data->map[++len] != NULL)
-		// printf("map L%d = %s\n", len, data->map[len]);
+	resize_map(data, -1, -1, len_max(data->map));
 	if (check_map(data, 0) == 1) // test the map if is a correct form
 		return (/*close(fd), */1);
 	return(/*close(fd), */0);
