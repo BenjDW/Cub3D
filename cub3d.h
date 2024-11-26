@@ -6,7 +6,7 @@
 /*   By: bde-wits <bde-wits@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 08:02:59 by bde-wits          #+#    #+#             */
-/*   Updated: 2024/11/24 09:34:27 by bde-wits         ###   ########.fr       */
+/*   Updated: 2024/11/26 07:48:58 by bde-wits         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,9 @@ typedef struct s_data
 	char	*WEST;
 	// code RGB 123,123,123 pas plus, possible moins
 	char	*FLOOR;
-	int		**F_rgb;// rgb floor
+	int		F_rgb[3];// rgb floor
 	char	*CEILING;//plafond
-	int		**C_rgb;// rgb plafond
+	int		C_rgb[3];// rgb plafond
 	//
 	char	**file;
 	char	**map; //map 0001  00111101N utilisable
@@ -58,6 +58,7 @@ int		test_map(t_data *data, int x, int y);
 
 // Utils
 int		is_instr(char *str, char c, int i);
+int		ft_atoi(char *ptr);
 
 // split function annexe
 char	**ft_split(char const *s, char c);

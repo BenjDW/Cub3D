@@ -6,7 +6,7 @@
 /*   By: bde-wits <bde-wits@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 05:18:11 by bde-wits          #+#    #+#             */
-/*   Updated: 2024/11/24 10:04:09 by bde-wits         ###   ########.fr       */
+/*   Updated: 2024/11/26 07:52:45 by bde-wits         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,33 @@ void	get_dir(t_data *data, char *line, int i, int code)
 	// printf("print strdup \"%s\"\n", line);
 }
 
+int	verif_rgb(t_data *data, char **split, int sign)
+{
+	int i;
+
+	i = -1;
+	if (sign == 0)
+		split = ft_split(data->CEILING, ',');
+	else
+		split = ft_split(data->FLOOR, ',');
+	while (split[++i] != NULL)
+	{
+		if (i >= 3 || ft_atoi(split[i]) > 255 || ft_atoi(split[i]) < 0)
+			return (printf("error in rgb code\n"), freearg(split), 1);
+	}
+	i = -1;
+	while (split[++i] != NULL)
+	{
+		if (sign == 0)
+			data->C_rgb[i] = ft_atoi(split[i]);
+		else
+			data->F_rgb[i] = ft_atoi(split[i]);
+	}
+	i = -1;
+	freearg(split);
+	return (0);
+}
+
 int	verif_dir(t_data *data)
 {
 	printf("start of verif dir\n");
@@ -123,6 +150,10 @@ int	verif_dir(t_data *data)
 		|| data->EAST == NULL || data->FLOOR == NULL 
 		|| data->CEILING == NULL)
 		return (printf("error direction path not found\n"), 1);
+	if (verif_rgb(data, NULL, 1) == 1 || verif_rgb(data, NULL, 0) == 1)
+		return (printf("RGB CEILING test error\n"), 1);
+	// if (verif_rgb(data, NULL, 1) == 1)
+	// 	return (printf("RGB FLOOR test error\n"), 1);
 	return (0);
 }
 
@@ -462,6 +493,31 @@ int	ft_strlen(char	*c)
 	while (c[i] != '\0')
 		i++;
 	return (i);
+}
+
+int	ft_atoi(char *ptr)
+{
+	int			i;
+	long long	result;
+	int			sign;
+
+	i = 0;
+	result = 0;
+	sign = 1;
+	while ((ptr[i] >= 9 && ptr[i] <= 13) || ptr[i] == 32)
+		i++;
+	if (ptr[i] == '+' || ptr[i] == '-')
+	{
+		if (ptr[i] == '-')
+			sign = sign * -1;
+		i++;
+	}
+	while (ptr[i] != '\0' && (ptr[i] >= 48 && ptr[i] <= 57))
+	{
+		result = result * 10 + (ptr[i] - '0');
+		i++;
+	}
+	return (result * sign);
 }
 
 int	main(int argc, char **argv)
