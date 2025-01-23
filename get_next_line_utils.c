@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bde-wits <bde-wits@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lpellegr <@student.42perpignan.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 15:36:42 by bde-wits          #+#    #+#             */
-/*   Updated: 2024/11/14 10:32:03 by bde-wits         ###   ########.fr       */
+/*   Updated: 2025/01/20 15:23:21 by lpellegr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ char	*ft_dupafter(char *src)
 	return (dup);
 }
 
-char	*ft_dup(char *src, int fin)
+char	*ft_dup(char *src, int fin) 
 {
 	int		i;
 	char	*dup;
